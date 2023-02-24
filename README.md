@@ -6,4 +6,4 @@ The server runs at localhost:8000, to start the server run the script:
 ```
 $ python api.py
 ```
-When the server is running, you can make either a GET, POST, PUT, or DELETE request. To stop the server agian press ```ctrl+c```.
+When the server is running, you can make a GET, POST, PUT, or DELETE request. To stop the server agian press ```ctrl+c```.
