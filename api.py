@@ -65,7 +65,7 @@ class MyServer(BaseHTTPRequestHandler):
         if index >= 0 and index < len(content):
             # Delete value at index
             content.pop(index)
-            response(self, 200, index)
+            response(self, 200)
         else:
             response(self, 405)
             return  
