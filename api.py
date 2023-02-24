@@ -51,7 +51,7 @@ class MyServer(BaseHTTPRequestHandler):
 
         if index >= 0 and index < len(content):
             content[index] = rawBody(self) # Update value at index
-            response(self, 200, index)
+            response(self, 200)
 
         else:
             response(self, 405)
