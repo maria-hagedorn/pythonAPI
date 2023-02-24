@@ -92,22 +92,18 @@ def response(self, code, index=-1):
         self.send_header("Content-type", "text/plain")
         self.end_headers()
 
-        writeToBody(self, index)
+        if(index == -1):
+            self.wfile.write(bytes(listToString(content), "utf-8"))
+        else:
+            self.wfile.write(bytes(content[index], "utf-8"))
+
     else:
         self.send_response(code)
-        self.end_headers()
-
-def writeToBody(self, index):
-    if(index == -1):
-        self.wfile.write(bytes(listToString(content), "utf-8"))
-    else:
-        self.wfile.write(bytes(content[index], "utf-8"))   
+        self.end_headers()   
 
 def rawBody(self):
     content_len = int(self.headers.get('Content-Length'))
     return self.rfile.read(content_len).decode("utf-8")
-
-
         
 
 
