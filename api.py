@@ -8,33 +8,47 @@ HOSTNAME = "localhost"
 
 content = ["test", "something", "to", "see", "it", "work!"]
 
-def listToString(s: str) -> str:
-    str = "["
- 
-    for i in range(0, len(s)):
-        str += s[i]
-        if (i != (len(s) - 1)): str += ", "
-
-    str += "]"
-    return str
-
-
 class MyServer(BaseHTTPRequestHandler):
+    """
+    MyServer class used to handle HTTP requests from clients.
+
+    Attributes
+    ----------
+    idxErr: number
+        value of request code for wrong request when specifying index in content
+    accepted: number
+        value of request code when no errors occur
+
+    Methods
+    -------
+    do_GET(self)
+        retrieves content for client, either by index or all of it
+    do_POST(self)
+        appends new element specified by the client to content
+    do_PUT(self)
+        updates existing element in content, specified by client
+    do_DELETE(self)
+        deletes element from content specified by client
+    """
+
+    idxErr = 406
+    accepted = 200
+
     def do_GET(self):
         path = self.path
 
         # Get all
         if path == "/":
-            response(self, 200)
+            response(self, MyServer.accepted)
         
         # Get index
         else:
             index = getIndex(self)
             
             if index >= 0 and index < len(content):
-                response(self, 200, index)
+                response(self, MyServer.accepted, index)
             else:
-                response(self, 405)
+                response(self, MyServer.idxErr)
                 return
 
 
@@ -43,7 +57,7 @@ class MyServer(BaseHTTPRequestHandler):
         post_body = rawBody(self)
         content.append(post_body)
 
-        response(self, 200)
+        response(self, MyServer.accepted)
 
 
     def do_PUT(self):
@@ -51,10 +65,10 @@ class MyServer(BaseHTTPRequestHandler):
 
         if index >= 0 and index < len(content):
             content[index] = rawBody(self) # Update value at index
-            response(self, 200)
+            response(self, MyServer.accepted)
 
         else:
-            response(self, 405)
+            response(self, MyServer.idxErr)
             return
 
 
@@ -67,22 +81,31 @@ class MyServer(BaseHTTPRequestHandler):
             content.pop(index)
             response(self, 200)
         else:
-            response(self, 405)
+            response(self, MyServer.idxErr)
             return  
 
 
 ######### HELPER FUNCTIONS #########
 
+def listToString(s: str) -> str:
+    str = "["
+ 
+    for i in range(0, len(s)):
+        str += s[i]
+        if (i != (len(s) - 1)): str += ", "
+
+    str += "]"
+    return str
+
 def getIndex(self):
     path = self.path
-
 
     # get index
     try:
         index = int(path[1:])
         return index
     except ValueError:
-        self.send_response(405)
+        self.send_response(406)
         self.end_headers()
         return
 
